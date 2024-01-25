@@ -1,0 +1,24 @@
+CssBaseline
+
+<Routes>
+        {getRoutes(routes)}
+        <Route path="*" element={<Navigate to="/dashboards/analytics" />} />
+      </Routes>
+
+
+
+
+useEffect
+
+
+useMemo
+
+
+
+import rtlPlugin from "stylis-plugin-rtl";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+
+
+
+import { useState, useEffect, useMemo, JSXElementConstructor, Key, ReactElement } from "react";
