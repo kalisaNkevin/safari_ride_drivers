@@ -74,7 +74,7 @@ function Passengers(): JSX.Element {
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
   }
-  
+
   const months = [
     "Jan",
     "Feb",
@@ -112,19 +112,33 @@ function Passengers(): JSX.Element {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      {!isLoading ? (
-        <DataTable
-          table={{ columns: columns, rows: rows }}
-          entriesPerPage={false}
-          showTotalEntries={false}
-          isSorted={true}
-          canSearch
-        />
-      ) : (
-        <MDBox sx={{ position: "relative", mx: "auto", width: 100, p: 45 }}>
-          <CircularProgress />
+      <MDBox>
+        <MDBox ml={{ xs: 0, sm: 1 }} mb={2} mt={{ xs: 3, sm: 0 }}>
+          <MDButton
+            variant="gradient"
+            color="success"
+            sx={{ height: "100%" }}
+            onClick={() => {
+              navigator("/create-schedule");
+            }}
+          >
+            Schedule a trip
+          </MDButton>
         </MDBox>
-      )}
+        {!isLoading ? (
+          <DataTable
+            table={{ columns: columns, rows: rows }}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            isSorted={true}
+            // canSearch
+          />
+        ) : (
+          <MDBox sx={{ position: "relative", mx: "auto", width: 100, p: 45 }}>
+            <CircularProgress />
+          </MDBox>
+        )}
+      </MDBox>
       <MDBox
         sx={{
           position: "relative",

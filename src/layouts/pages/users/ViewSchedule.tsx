@@ -339,10 +339,10 @@ function ViewSchedule(): JSX.Element {
                     </MDBox>
                     <MDBox mt={0.5} mb={0.5} ml={0.5}>
                       <MDTypography variant="button" fontWeight="bold" color="text">
-                        Price:{" "}
+                        Price: {" "}
                       </MDTypography>
                       <MDTypography variant="button" fontWeight="regular" color="text">
-                        {getSchedule[0].fareAmount}
+                        {getSchedule[0].fareAmount} $
                       </MDTypography>
                     </MDBox>
 

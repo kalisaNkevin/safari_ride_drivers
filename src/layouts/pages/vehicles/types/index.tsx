@@ -49,7 +49,6 @@ function VehicleTypes(): JSX.Element {
   ];
 
   const dispatch = useDispatch();
-  const navigator = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const vehicleTypes = useSelector((state: RootStateVTypes) => state.vehicleTypes.results);
 

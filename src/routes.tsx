@@ -53,6 +53,7 @@ import VehicleType from "layouts/pages/vehicles/type";
 import Schedules from "layouts/pages/users/schedules";
 import Documents from "layouts/pages/users/ViewDocuments";
 import ViewUser from "layouts/pages/users/ViewUser";
+import CreateSchedule from "layouts/pages/users/createSchedule";
 import ViewSchedule from "layouts/pages/users/ViewSchedule";
 import ResetPassword from "layouts/authentication/reset-password/cover";
 import Notifications from "layouts/pages/notifications";
@@ -129,6 +130,14 @@ const routes = () => {
       key: "Schedules",
       route: "/schedule/:id",
       component: <ViewSchedule />,
+    },
+    {
+      display: false,
+      protected: true,
+      name: "Create Schedules",
+      key: "createSchedule",
+      route: "/create-schedule",
+      component: <CreateSchedule />,
     },
     {
       display: false,
