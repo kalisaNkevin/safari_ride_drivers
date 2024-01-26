@@ -31,7 +31,6 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import apiUrlV1 from "utils/axiosInstance";
-import { useDispatch } from "react-redux";
 import { setCredentials } from "redux/features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -40,54 +39,91 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Grid } from "@mui/material";
 
-function Basic(): JSX.Element {
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const [isLoginProcessing, setIsLoginProcessing] = useState<boolean>(false);
-
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+function Signup(): JSX.Element {
+  const [isSignupProcessing, setIsSignupProcessing] = useState<boolean>(false);
 
   const [getPhonenumber, setPhonenumber] = useState<string>("");
   const [getPassword, setPassword] = useState<string>("");
+  const [getEmail, setEmail] = useState<string>("");
+  const [getCpPassword, setCpPassword] = useState<string>("");
+  const [getFullname, setFullname] = useState<string>("");
+
+  const handleEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handleFullname = (e: ChangeEvent<HTMLInputElement>) => setFullname(e.target.value);
+  const handleCpPassword = (e: ChangeEvent<HTMLInputElement>) => setCpPassword(e.target.value);
   const handlePhonenumber = (e: ChangeEvent<HTMLInputElement>) => setPhonenumber(e.target.value);
   const handlePassword = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const login = async (e: any) => {
+  const signup = async (e: any) => {
     e.preventDefault();
 
-    // Set isLoginProcess
-    setIsLoginProcessing(true);
+    // Set isSignupProcess
+    setIsSignupProcessing(true);
+
+    if (
+      getCpPassword.trim().length == 0 ||
+      getPassword.trim().length == 0 ||
+      getEmail.trim().length == 0 ||
+      getFullname.trim().length == 0 ||
+      getPhonenumber.trim().length == 0
+    ) {
+      toast.error("Fill all Inputs", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setIsSignupProcessing(false);
+      return;
+    }
+
+    if (getPassword != getCpPassword) {
+      toast.error("Passwords do not match", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setIsSignupProcessing(false);
+      return;
+    }
+
     apiUrlV1
-      .post("/auth/login", {
+      .post("/auth/signup", {
+        fullName: getFullname,
+        email: getEmail,
+        userType: 2,
         phoneNumber: getPhonenumber,
         password: getPassword,
       })
       .then((response) => {
-        setIsLoginProcessing(false);
+        setIsSignupProcessing(false);
         const data = response.data.data;
 
-        if (data.user.userType.id == 2) {
-          dispatch(setCredentials(data));
-          localStorage.setItem("accessToken", data.tokens.accessToken);
-          localStorage.setItem("refreshToken", data.tokens.refreshToken);
-          navigate("/admin");
-        } else {
-          toast.error("You don't have driver access", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
+        navigate("/login");
+        toast.error("You're not allowed to access dashboard", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       })
       .catch((error) => {
-        setIsLoginProcessing(false);
+        setIsSignupProcessing(false);
         toast.error(error.response.data.message, {
           position: "top-right",
           autoClose: 5000,
@@ -120,11 +156,31 @@ function Basic(): JSX.Element {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            Signup
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form" onSubmit={login}>
+          <MDBox component="form" role="form" onSubmit={signup}>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Fullname"
+                name="fullname"
+                fullWidth
+                value={getFullname}
+                onChange={handleFullname}
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="email"
+                label="Email"
+                name="email"
+                fullWidth
+                value={getEmail}
+                onChange={handleEmail}
+              />
+            </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="text"
@@ -145,18 +201,21 @@ function Basic(): JSX.Element {
                 onChange={handlePassword}
               />
             </MDBox>
-            <Grid container spacing={3}>
-              <Grid item xs={5} lg={5}>
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Confirm Password"
+                name="cppassword"
+                fullWidth
+                value={getCpPassword}
+                onChange={handleCpPassword}
+              />
+            </MDBox>
+            <Grid container>
+              <Grid item>
                 <MDBox display="flex" alignItems="center">
-                  <Link to="/signup" style={linkStyle}>
-                    {"I don't have an account"}
-                  </Link>
-                </MDBox>
-              </Grid>
-              <Grid item xs={5} lg={5}>
-                <MDBox sx={{ float: "right" }}>
-                  <Link to="/reset-password" style={linkStyle}>
-                    Reset password
+                  <Link to="/login" style={linkStyle}>
+                    {"I already have an account"}
                   </Link>
                 </MDBox>
               </Grid>
@@ -167,10 +226,10 @@ function Basic(): JSX.Element {
                 variant="gradient"
                 type="submit"
                 color="info"
-                disabled={isLoginProcessing}
+                disabled={isSignupProcessing}
                 fullWidth
               >
-                sign in
+                signup
               </MDButton>
             </MDBox>
           </MDBox>
@@ -192,4 +251,4 @@ function Basic(): JSX.Element {
   );
 }
 
-export default Basic;
+export default Signup;

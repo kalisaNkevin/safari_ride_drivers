@@ -58,6 +58,7 @@ import ViewSchedule from "layouts/pages/users/ViewSchedule";
 import ResetPassword from "layouts/authentication/reset-password/cover";
 import Notifications from "layouts/pages/notifications";
 import DRequest from "layouts/pages/driverRequest/DRequest";
+import Signup from "layouts/authentication/sign-up";
 
 const routes = () => {
   const { user } = useSelector<RootState, any>((state) => state.auth);
@@ -162,6 +163,14 @@ const routes = () => {
       key: "ResetPassword",
       route: "/reset-password",
       component: <ResetPassword />,
+    },
+    {
+      display: false,
+      protected: false,
+      name: "signup",
+      key: "signup",
+      route: "/signup",
+      component: <Signup />,
     },
     {
       display: false,

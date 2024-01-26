@@ -74,18 +74,20 @@ function ViewDocs(): JSX.Element {
         setUploading(false);
       })
       .catch((error) => {
+        if ((error as any).response?.data?.message) {
+          toast.error((error as any).response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
         setUploading(false);
         console.error("Make sure you are uploading all 3 files:", error.response);
-        toast.error("Make sure you are uploading all 3 files", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
       });
   };
   return (

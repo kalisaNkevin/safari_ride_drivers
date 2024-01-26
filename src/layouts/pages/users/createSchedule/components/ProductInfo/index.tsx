@@ -90,16 +90,18 @@ function ProductInfo(): JSX.Element {
       })
       .catch((error) => {
         console.error("Error while creating trip", error.response);
-        toast.error("Error while scheduling a trip", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        if ((error as any).response?.data?.message) {
+          toast.error((error as any).response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
       });
   };
 

@@ -141,16 +141,18 @@ function VehicleTypes(): JSX.Element {
       })
       .catch((error) => {
         console.log(error.response);
-        toast.error("You can not add more than one car", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        if ((error as any).response?.data?.message) {
+          toast.error((error as any).response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
       });
   };
 
