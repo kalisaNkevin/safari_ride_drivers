@@ -34,7 +34,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { RootStateVTypes } from "redux/store";
 import getVehicleTypes from "Api/getVehicleType";
 import { addVehicleTypes, setVehicleTypes } from "redux/features/vehicles/vehicleTypeSlice";
-import { CircularProgress } from "@mui/material";
+import { Autocomplete, CircularProgress } from "@mui/material";
 import apiUrlV1 from "utils/axiosInstance";
 
 // React-toastify
@@ -44,10 +44,8 @@ import formatDate from "utils/DateFormat";
 
 function VehicleTypes(): JSX.Element {
   const columns = [
-    { Header: "id", accessor: "id", align: "center" },
     { Header: "Vehicle Type", accessor: "type" },
-    { Header: "Created At", accessor: "CreatedAt", align: "center" },
-    { Header: "Action", accessor: "action" },
+    { Header: "Vehicle plate", accessor: "plate", align: "center" },
   ];
 
   const dispatch = useDispatch();
@@ -76,26 +74,12 @@ function VehicleTypes(): JSX.Element {
     id: type.id,
     type: <VehicleTypeCell image={!type.icon ? VehicleTypeIcon : type.icon} name={type.name} />,
     CreatedAt: formatDate(type.createdAt),
-    action: (
-      <MDButton
-        variant="contained"
-        color="dark"
-        size="small"
-        onClick={() => navigator(`/vehicle/types/${type.id}`)}
-      >
-        More
-      </MDButton>
-    ),
   }));
 
-  const [getTypeName, setTypeName] = useState<string>("");
-  const [getTypeIcon, setTypeIcon] = useState<File | string>();
+  const [plateNumber, setPlateNumber] = useState<string>("");
 
-  const handleChangeTypeName = (e: ChangeEvent<HTMLInputElement>) => {
-    setTypeName(e.target.value);
-  };
-  const handleChangeTypeIcon = (e: ChangeEvent<HTMLInputElement>) => {
-    setTypeIcon(e.target.value);
+  const handleChangePlateNumber = (e: ChangeEvent<HTMLInputElement>) => {
+    setPlateNumber(e.target.value);
   };
 
   const handleSaveType = (e: any) => {
@@ -105,10 +89,10 @@ function VehicleTypes(): JSX.Element {
     const token = localStorage.getItem("accessToken");
     apiUrlV1
       .post(
-        "/admin/vehicles/types",
+        "/driver/vehicles/add",
         {
-          name: getTypeName,
-          icon: getTypeIcon,
+          plateNumber,
+          vehicleTypeId: 99994,
         },
         {
           headers: {
@@ -120,8 +104,7 @@ function VehicleTypes(): JSX.Element {
       )
       .then((response) => {
         const data = response.data["data"];
-        setTypeIcon("");
-        setTypeName("");
+        setPlateNumber("");
 
         if (data) {
           const newVtype = {
@@ -133,8 +116,7 @@ function VehicleTypes(): JSX.Element {
             icon: data.icon,
           };
 
-          dispatch(addVehicleTypes(newVtype));
-          toast.success("New vehicle type addedd added successfully", {
+          toast.success("Your vehicle has been updated successfully", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: true,
@@ -160,7 +142,7 @@ function VehicleTypes(): JSX.Element {
       })
       .catch((error) => {
         console.log(error.response);
-        toast.error("Couldn't add new type", {
+        toast.error("You can not add more than one car", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -193,7 +175,7 @@ function VehicleTypes(): JSX.Element {
                   <MDBox mb={3} sx={{ display: "flex", justifyContent: "space-between" }}>
                     <MDBox>
                       <MDTypography variant="h5" fontWeight="medium">
-                        New Vehicle Type
+                        My car type
                       </MDTypography>
                     </MDBox>
                     <MDBox>
@@ -205,57 +187,34 @@ function VehicleTypes(): JSX.Element {
                   <MDBox mb={2}>
                     <MDInput
                       type="text"
-                      label="Type name"
+                      label="Plate number"
                       name="name"
                       fullWidth
-                      value={getTypeName}
-                      onChange={handleChangeTypeName}
+                      value={plateNumber}
+                      onChange={handleChangePlateNumber}
                     />
                   </MDBox>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="text"
-                      label="Icon Url"
-                      name="icon"
-                      fullWidth
-                      value={getTypeIcon}
-                      onChange={handleChangeTypeIcon}
+                  <MDBox mb={3}>
+                    <MDBox mb={1.625} display="inline-block">
+                      <MDTypography
+                        component="label"
+                        variant="button"
+                        fontWeight="regular"
+                        color="text"
+                        textTransform="capitalize"
+                      >
+                        Vehicle type
+                      </MDTypography>
+                    </MDBox>
+                    <Autocomplete
+                      defaultValue="Sedan"
+                      options={["Sedan", "SUV", "Pickup", "Van", "Hatchback"]}
+                      renderInput={(params) => <MDInput {...params} variant="standard" />}
                     />
                   </MDBox>
                 </MDBox>
               </MDBox>
             </Card>
-          </Grid>
-          <Grid item xs={12} lg={9}>
-            <MDBox mb={3}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Card sx={{ overflow: "visible" }}>
-                    {!isLoading ? (
-                      <MDBox p={3}>
-                        <MDBox mt={8} mb={2}>
-                          <MDBox mb={1} ml={2}>
-                            <MDTypography variant="h5" fontWeight="medium">
-                              Vehicle Types
-                            </MDTypography>
-                          </MDBox>
-                          <DataTable
-                            table={{ columns, rows }}
-                            entriesPerPage={false}
-                            showTotalEntries={false}
-                            isSorted={true}
-                          />
-                        </MDBox>
-                      </MDBox>
-                    ) : (
-                      <MDBox sx={{ position: "relative", mx: "auto", width: 100, p: 13.5 }}>
-                        <CircularProgress />
-                      </MDBox>
-                    )}
-                  </Card>
-                </Grid>
-              </Grid>
-            </MDBox>
           </Grid>
         </Grid>
       </MDBox>

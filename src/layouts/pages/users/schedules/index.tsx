@@ -22,100 +22,92 @@ import DashboardNavbar from "components/Navbars/DashboardNavbar";
 import Footer from "components/Footer";
 import DataTable from "components/Tables/DataTable";
 import MDButton from "components/MDButton";
-import UserProfile from "./components/UserProfile/UserProfile";
-import StatusActive from "./components/StatusActive/StatusActive";
 import { useDispatch, useSelector } from "react-redux";
-import { RootStateUsers } from "redux/store";
+import { RootStateSchedules } from "redux/store";
 import { useEffect, useState } from "react";
-import getUsers from "Api/getUsers";
-import { setUsers } from "redux/features/users/usersSlice";
+import getSchedules from "Api/getSchedules";
+import { setSchedules } from "redux/features/schedules/schedulesSlice";
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-// Import default user profile
-import defaultImg from "assets/images/user/default.png";
-import formatDate from "utils/DateFormat";
 
 function Passengers(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const columns = [
-    {
-      Header: "Name",
-      accessor: "name",
-      Cell: ({ value: [name, phonenumber, data] }: any) => (
-        <UserProfile
-          image={data.image != null ? data.image : defaultImg}
-          name={name}
-          phonenumber={phonenumber}
-        />
-      ),
-    },
-    { Header: "Gender", accessor: "gender" },
-    { Header: "Email", accessor: "email" },
-    { Header: "Registered date", accessor: "regdate" },
-    {
-      Header: "Status",
-      accessor: "status",
-      Cell: ({ value }: any) => {
-        let status;
-
-        if (value === "Active") {
-          status = <StatusActive icon="done" color="success" status="Active" />;
-        } else {
-          status = <StatusActive icon="close" color="error" status="Inactive" />;
-        }
-        return status;
-      },
-    },
+    { Header: "From", accessor: "from" },
+    { Header: "to", accessor: "to" },
+    { Header: "Leaving", accessor: "leaving" },
     { Header: "Action", accessor: "action" },
   ];
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
-  const users = useSelector((state: RootStateUsers) => state.users.results);
+  const schedules = useSelector((state: RootStateSchedules) => state.schedules.results);
 
-  const GetAllUserDetails = (userId: number): void => {
-    navigator(`/user/${userId}`);
+  const GetAllScheduleDetails = (scheduleId: number): void => {
+    navigator(`/schedule/${scheduleId}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await getUsers();
-        dispatch(setUsers(userData));
+        const scheduleData = await getSchedules();
+        dispatch(setSchedules(scheduleData));
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching schedules data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (users.length === 0) {
+    if (schedules.length === 0) {
       fetchData();
     } else {
       setIsLoading(false);
     }
-  }, [dispatch, users]);
+  }, [dispatch, schedules]);
 
-  const rows = users
-    .filter((user) => user.userType.id == 1)
-    .map((user) => ({
-      name: [user.fullName, user.phoneNumber, { image: user.profileImage }],
-      gender: user.gender == null ? "_" : user.gender,
-      email: user.email == null ? "_" : user.email,
-      regdate: formatDate(user.createdAt),
-      status: user.isVerified ? "Active" : "Inactive",
-      action: (
-        <MDButton
-          variant="outlined"
-          color="info"
-          size="small"
-          onClick={() => GetAllUserDetails(user.id)}
-        >
-          View
-        </MDButton>
-      ),
-    }));
+  function formatTime(date: any) {
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  }
+  
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const rows = schedules.map((schedule) => ({
+    from: schedule.from,
+    to: schedule.to,
+    leaving: ` ${days[new Date(schedule.date).getUTCDay()]} ${
+      months[new Date(schedule.date).getUTCMonth()]
+    } ${new Date(schedule.date).getUTCDate()} | ${formatTime(new Date(schedule.date))}`,
+    action: (
+      <MDButton
+        variant="outlined"
+        color="info"
+        size="small"
+        onClick={() => GetAllScheduleDetails(schedule.id)}
+      >
+        View more
+      </MDButton>
+    ),
+  }));
 
   return (
     <DashboardLayout>

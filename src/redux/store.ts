@@ -6,6 +6,7 @@ import languagesSlice from "./features/languages/languagesSlice";
 import reportsSlice from "./features/reports/reportsSlice";
 import notificationsSlice from "./features/notifications/notificationsSlice";
 import DocsSlice from "./features/DriverDocs/DocsSlice";
+import schedulesSlice from "./features/schedules/schedulesSlice";
 
 export interface RootState {
   auth: ReturnType<typeof AuthSlice>;
@@ -19,6 +20,11 @@ export interface RootStateUsers {
 export interface RootStateVTypes {
   data(data: any): unknown;
   vehicleTypes: ReturnType<typeof vehicleTypeSlice>;
+}
+
+export interface RootStateSchedules {
+  data(data: any): unknown;
+  schedules: ReturnType<typeof schedulesSlice>;
 }
 
 export interface RootStateLang {
@@ -46,6 +52,7 @@ const store = configureStore({
     vehicleTypes: vehicleTypeSlice,
     languages: languagesSlice,
     reports: reportsSlice,
+    schedules: schedulesSlice,
     notifications: notificationsSlice,
     driverdocs: DocsSlice,
   },

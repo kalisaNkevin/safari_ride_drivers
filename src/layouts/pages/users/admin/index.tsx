@@ -25,7 +25,7 @@ import MDButton from "components/MDButton";
 import UserProfile from "./components/UserProfile/UserProfile";
 import StatusActive from "./components/StatusActive/StatusActive";
 import { useDispatch, useSelector } from "react-redux";
-import { RootStateUsers } from "redux/store";
+import { RootState, RootStateUsers } from "redux/store";
 import { useEffect, useState } from "react";
 import getUsers from "Api/getUsers";
 import { setUsers } from "redux/features/users/usersSlice";
@@ -73,6 +73,7 @@ function Admin(): JSX.Element {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const users = useSelector((state: RootStateUsers) => state.users.results);
+  const {  user } = useSelector<RootState, any>((state) => state.auth);
 
   const GetAllUserDetails = (userId: number): void => {
     navigator(`/user/${userId}`);
@@ -98,7 +99,7 @@ function Admin(): JSX.Element {
   }, [dispatch, users]);
 
   const rows = users
-    .filter((user) => user.userType.id == 3)
+    .filter((user_) => user_.id === user.id)
     .map((user) => ({
       name: [user.fullName, user.phoneNumber, { image: user.profileImage }],
       gender: user.gender == null ? "_" : user.gender,

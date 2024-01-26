@@ -45,18 +45,17 @@ import MDAvatar from "components/MDAvatar";
 import Icon from "@mui/material/Icon";
 
 // Images
-import Driver from "layouts/pages/users/driver";
 import Admin from "layouts/pages/users/admin";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 import VehicleTypes from "layouts/pages/vehicles/types";
 import VehicleType from "layouts/pages/vehicles/type";
-import Passengers from "layouts/pages/users/passenger";
 import Schedules from "layouts/pages/users/schedules";
+import Documents from "layouts/pages/users/ViewDocuments";
 import ViewUser from "layouts/pages/users/ViewUser";
+import ViewSchedule from "layouts/pages/users/ViewSchedule";
 import ResetPassword from "layouts/authentication/reset-password/cover";
 import Notifications from "layouts/pages/notifications";
-import DriverRequest from "layouts/pages/driverRequest";
 import DRequest from "layouts/pages/driverRequest/DRequest";
 
 const routes = () => {
@@ -84,49 +83,29 @@ const routes = () => {
       icon: <Icon fontSize="medium">image</Icon>,
       collapse: [
         {
-          name: "Users",
-          key: "profile",
-          collapse: [
-            {
-              protected: true,
-              name: "Admin",
-              key: "admin",
-              route: "/admins",
-              component: <Admin />,
-            },
-            {
-              protected: true,
-              name: "Passenger",
-              key: "passenger",
-              route: "/passengers",
-              component: <Passengers />,
-            },
-            {
-              protected: true,
-              name: "My trips",
-              key: "trips",
-              route: "/trips",
-              component: <Schedules />,
-            },
-            {
-              protected: true,
-              name: "Driver",
-              key: "driver",
-              route: "/drivers",
-              component: <Driver />,
-            },
-          ],
+          protected: true,
+          name: "My profile",
+          key: "admin",
+          route: "/admins",
+          component: <Admin />,
         },
         {
           protected: true,
-          name: "Driver request",
-          key: "DriverRequest",
-          route: "/driver-request",
-          component: <DriverRequest />,
+          name: "Driver documents",
+          key: "documents",
+          route: "/documents",
+          component: <Documents />,
         },
         {
           protected: true,
-          name: "Vehicles",
+          name: "My trips",
+          key: "trips",
+          route: "/trips",
+          component: <Schedules />,
+        },
+        {
+          protected: true,
+          name: "My vehicle",
           key: "vehicle",
           route: "/vehicle/types",
           component: <VehicleTypes />,
@@ -142,6 +121,14 @@ const routes = () => {
       key: "Driver",
       route: "/user/:id",
       component: <ViewUser />,
+    },
+    {
+      display: false,
+      protected: true,
+      name: "Schedules",
+      key: "Schedules",
+      route: "/schedule/:id",
+      component: <ViewSchedule />,
     },
     {
       display: false,

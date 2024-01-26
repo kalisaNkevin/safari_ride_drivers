@@ -23,14 +23,12 @@ import DashboardLayout from "components/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";
-import DriverRequestCell from "./component/DriverRequestCell";
 import DataTable from "components/Tables/DataTable";
-import defaultImg from "assets/images/user/default.png";
 import MDButton from "components/MDButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { RootStateDrvierDocs, RootStateUsers } from "redux/store";
+import { RootStateDrvierDocs, RootStateSchedules } from "redux/store";
 import { CircularProgress } from "@mui/material";
 
 // React-toastify
@@ -38,9 +36,9 @@ import "react-toastify/dist/ReactToastify.css";
 import formatDate from "utils/DateFormat";
 import { setDocs } from "redux/features/DriverDocs/DocsSlice";
 import getDriverDocs from "Api/getDriverDocs";
-import getUsers from "Api/getUsers";
-import { IUser, setUsers } from "redux/features/users/usersSlice";
 import Status from "./component/Status";
+import getSchedules from "Api/getSchedules";
+import { setSchedules } from "redux/features/schedules/schedulesSlice";
 
 function DriverRequest(): JSX.Element {
   const columns = [
@@ -55,45 +53,33 @@ function DriverRequest(): JSX.Element {
   const navigator = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const driverdocs = useSelector((state: RootStateDrvierDocs) => state.driverdocs.results);
-  const users = useSelector((state: RootStateUsers) => state.users.results);
+  const schedules = useSelector((state: RootStateSchedules) => state.schedules.results);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const requests = await getDriverDocs();
-        dispatch(setDocs(requests));
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const requests = await getDriverDocs();
+  //       dispatch(setDocs(requests));
 
-        const userData = await getUsers();
-        dispatch(setUsers(userData));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       const tripData = await getSchedules();
+  //       dispatch(setSchedules(tripData));
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    if (driverdocs.length === 0 || users.length === 0) {
-      fetchData();
-    } else {
-      setIsLoading(false);
-    }
-  }, [dispatch, driverdocs.length, users.length, setIsLoading]);
-
-  const getUserDet = (id: number): IUser[] => {
-    return users.filter((user: IUser) => user.id === id);
-  };
+  //   if (driverdocs.length === 0 || schedules.length === 0) {
+  //     fetchData();
+  //   } else {
+  //     setIsLoading(false);
+  //   }
+  // }, [dispatch, driverdocs.length, schedules.length, setIsLoading]);
 
   const rows = driverdocs.map((doc) => {
-    const userDet = getUserDet(doc.userId);
-
     return {
       id: doc.id,
-      type: (
-        <DriverRequestCell
-          image={!userDet[0]?.profileImage ? defaultImg : userDet[0].profileImage}
-          name={userDet.length > 0 ? userDet[0].fullName : "Unknown User"}
-        />
-      ),
       status: Status(doc.isVerified),
       CreatedAt: formatDate(doc.createdAt),
       action: (
@@ -132,7 +118,7 @@ function DriverRequest(): JSX.Element {
                         <MDBox mt={8} mb={2}>
                           <MDBox mb={1} ml={2}>
                             <MDTypography variant="h5" fontWeight="medium">
-                              Driver request
+                              My trip schedules
                             </MDTypography>
                           </MDBox>
                           <DataTable
