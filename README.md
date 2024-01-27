@@ -1,4 +1,3 @@
-# [GOBI DASHBOARD](https://www.gobi.rw/) [![instagram](https://static.xx.fbcdn.net/rsrc.php/v3/yx/r/tBxa1IFcTQH.png)](https://www.instagram.com/gobi.app/)
 
 ![version](https://img.shields.io/badge/version-1.0.1-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/ct-material-dashboard-pro-react.svg)](https://github.com/creativetimofficial/ct-material-dashboard-pro-react/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/ct-material-dashboard-pro-react.svg)](https://github.com/creativetimofficial/ct-material-dashboard-pro-react/issues?q=is%3Aissue+is%3Aclosed)
 
