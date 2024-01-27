@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 
-const socket = io("http://localhost:4001");
+const socket = io("https://safari-ride-production.up.railway.app");
 
 socket.on("connect", () => {
   console.log("Connected to the Socket.IO server!");
