@@ -33,8 +33,8 @@ import { useNavigate } from "react-router-dom";
 function Passengers(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const columns = [
-    { Header: "From", accessor: "from" },
-    { Header: "to", accessor: "to" },
+    { Header: "Pick up", accessor: "from" },
+    { Header: "Drop off", accessor: "to" },
     { Header: "Leaving", accessor: "leaving" },
     { Header: "Action", accessor: "action" },
   ];

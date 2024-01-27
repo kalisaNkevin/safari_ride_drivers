@@ -78,24 +78,6 @@ function Passengers(): JSX.Element {
     navigator(`/user/${userId}`);
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const userData = await getUsers();
-  //       dispatch(setUsers(userData));
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   if (users.length === 0) {
-  //     fetchData();
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // }, [dispatch, users]);
 
   const rows = users
     .filter((user) => user.userType.id == 1)
